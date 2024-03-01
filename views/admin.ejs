@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+    <div class="main">
+        <h2>Users List</h2> 
+        <div class="admin_btn"> <button ><a href="/">Visit site</a></button> </div>
+    </div>
+    <div class="users-list">
+        <% if (users && users.length) { %>
+            <% users.forEach(user => { %>
+                <div class="user">
+                    <p>Full Name: <%= user.fullName %></p>
+                    <p>Email: <%= user.email %></p>
+                    <p>Role: <%= user.role %></p>
+                    <form action="/edit-user" method="post" class="edit-user-form" data-user-id="<%= user._id %>">
+                        <input type="hidden" name="userId" value="<%= user._id %>">
+                        <label for="newName">New Name:</label>
+                        <input type="text" id="newName" name="newName" value="<%= user.fullName %>" required>
+                        <button type="submit" class="edit">Edit</button>
+                        <span class="edit-message" id="edit-message-<%= user._id %>"></span> <!-- Container for edit message -->
+                        <button class="del" onclick="deleteUser('<%= user._id %>')">Delete</button>
+                        <span class="delete-message" id="delete-message-<%= user._id %>"></span> <!-- Container for delete message -->
+                    </form>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>No users found</p>
+        <% } %>
+    </div>
+    <script src="/admin.js"></script>
+</body>
+</html>

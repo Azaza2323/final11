@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<style>
+    #clear {
+        background-color: skyblue;
+    }
+</style>
+<body>
+    <header>
+        <a href="/"><h1>CineMagic</h1></a>
+        <div class="container">
+            <form id="form" action="/search" method="GET">
+                <input type="text" placeholder="Search" id="search" class="search" name="query">
+            </form>
+            <a href="/login">Login</a>
+            <a href="/signup">Signup</a>
+            <a href="/news">News</a> <!-- Updated the href to point to the server route -->
+            <button id="logout-button" class="logout">Logout</button>
+            <!-- Language Selection -->
+            <select id="language-select">
+                <option value="en-US">English</option>
+                <option value="ru-RU">Russian</option>
+                <!-- Add more language options as needed -->
+            </select>
+        </div>
+    </header>
+    <div class="container">
+        <h1>Welcome to News Page (<span id="resultCount"><%= articles.length %></span> Results)</h1>
+        <div class="row">
+            <% articles.forEach(function(article) { %>
+                <div class="card my-4 mx-2" style="width: 18rem;">
+                    <img src="<%= article.urlToImage %>" class="card-img-top" alt="<%= article.title %>">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= article.title %></h5>
+                        <p class="card-text"><%= article.description %></p>
+                        <a href="<%= article.url %>" target="_blank" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+    <div class="d-flex justify-content-around">
+        <button class="btn-primary">&lt; Previous Page</button>
+        <button class="btn-primary">Next Page &gt;</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+    <script>
+      const fetchNews = async (page) => {
+          console.log("Fetching news...");
+          const responseContainer = document.querySelector(".row"); // Use the correct selector
+          const resultCount = document.getElementById("resultCount");
+      
+          const url = `https://newsapi.org/v2/everything?q=Apple&from=2024-03-01&pagesize=20&page=${2}&sortBy=popularity&apiKey=44bf1fa9027f4abea7ceb3a8109c68fc`;
+      
+          try {
+              const response = await fetch(url);
+              const data = await response.json();
+              console.log(data);
+              
+              let htmlContent = "";
+              resultCount.innerHTML = data.totalResults;
+              
+              for (let item of data.articles) {
+                  htmlContent += `
+                      <div class="card my-4 mx-2" style="width: 18rem;">
+                          <img src="${item.urlToImage}" class="card-img-top" alt="${item.title}">
+                          <div class="card-body">
+                              <h5 class="card-title">${item.title}</h5>
+                              <p class="card-text">${item.description}</p>
+                              <a href="${item.url}" target="_blank" class="btn btn-primary">Read More</a>
+                          </div>
+                      </div>`;
+              }
+              
+              responseContainer.innerHTML = htmlContent;
+          } catch (error) {
+              console.error("There was an error fetching the news:", error);
+          }
+      };
+      
+      fetchNews(1);
+      </script>
+</body>
+</html>
