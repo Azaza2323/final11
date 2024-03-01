@@ -5,29 +5,6 @@ import bodyParser from "body-parser";
 import fetch from 'node-fetch';
 import nodemailer from 'nodemailer';
 
-app.set('view engine', 'ejs');
-app.set('views', './views'); // This is where your EJS templates are stored
-
-app.use(express.static('public'));
-app.get('/news', async (req, res) => {
-    const apiKey = '44bf1fa9027f4abea7ceb3a8109c68fc';
-    const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-
-    try {
-        const newsResponse = await fetch(url);
-        const newsData = await newsResponse.json();
-
-        if (newsData.status === 'ok' && newsData.articles) {
-            res.render('news', { articles: newsData.articles });
-        } else {
-            res.render('error', { message: 'Failed to load articles.' });
-        }
-    } catch (error) {
-        console.error('Error fetching news:', error);
-        res.status(500).render('error', { message: 'Error fetching news.' });
-    }
-});
-
 
 
 const transporter = nodemailer.createTransport({
@@ -276,5 +253,4 @@ app.get('/search', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-}); 
-
+});
